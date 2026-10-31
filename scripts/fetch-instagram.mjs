@@ -37,7 +37,31 @@ async function getMedia() {
     }
     console.error(hide(lastErr));
   }
+  await diagnose();
   throw new Error('No se pudo leer Instagram. Último error: ' + hide(lastErr));
+}
+
+// Muestra a qué tiene acceso el token (nunca imprime el token en sí)
+async function diagnose() {
+  const base = HOSTS[0];
+  const t = encodeURIComponent(TOKEN);
+  const pruebas = [
+    ['Quién es el token (me)', `${base}/me?fields=id,name&access_token=${t}`],
+    ['Permisos del token (debug_token)', `${base}/debug_token?input_token=${t}&access_token=${t}`],
+    ['Páginas con Instagram (me/accounts)', `${base}/me/accounts?fields=id,name,instagram_business_account&access_token=${t}`],
+  ];
+  console.log('--- DIAGNÓSTICO ---');
+  for (const [nombre, url] of pruebas) {
+    try {
+      const res = await fetch(url);
+      const txt = await res.text();
+      console.log(`${nombre}: HTTP ${res.status}`);
+      console.log(hide(txt).slice(0, 1500));
+    } catch (e) {
+      console.log(`${nombre}: error ${hide(e.message)}`);
+    }
+  }
+  console.log('--- FIN DIAGNÓSTICO ---');
 }
 
 async function download(url, dest) {

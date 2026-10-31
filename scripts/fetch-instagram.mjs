@@ -16,8 +16,8 @@ if (!TOKEN || !IG_ID) {
 const hide = (t) => String(t).split(TOKEN).join('***');
 const FIELDS = 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp';
 const HOSTS = [
-  'https://graph.facebook.com/v23.0',
-  'https://graph.instagram.com/v23.0',
+  'https://graph.facebook.com/v26.0',
+  'https://graph.instagram.com/v26.0',
 ];
 
 async function getMedia() {
@@ -49,6 +49,9 @@ async function diagnose() {
     ['Quién es el token (me)', `${base}/me?fields=id,name&access_token=${t}`],
     ['Permisos del token (debug_token)', `${base}/debug_token?input_token=${t}&access_token=${t}`],
     ['Páginas con Instagram (me/accounts)', `${base}/me/accounts?fields=id,name,instagram_business_account&access_token=${t}`],
+    ['Permisos concedidos (me/permissions)', `${base}/me/permissions?access_token=${t}`],
+    ['Cuenta de Instagram directa', `${base}/${IG_ID}?fields=id,username&access_token=${t}`],
+    ['Negocios del token (me/businesses)', `${base}/me/businesses?access_token=${t}`],
   ];
   console.log('--- DIAGNÓSTICO ---');
   for (const [nombre, url] of pruebas) {
